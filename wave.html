@@ -1,8 +1,14 @@
 <html>
   <head>
+    <style>
+    * {
+      margin:0;
+      padding:0;
+    }
+    </style>
   </head>
   <body>
-    <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width="90%" height="90%">
+    <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 600">
     </svg>
     <script>
 class Particle {
@@ -68,11 +74,10 @@ class Particle {
 const svg = document.getElementsByTagName('svg')[0];
 const count = 100;
 const width = 800;
-const height = 50;
 const displacement = Math.PI * 4 / count;
 const step = width / count;
 const amp = step * 2.8;
-const offset = 50;
+const offset = 0;
 
 const circleParticles = [];
 const verticalParticles = [];
