@@ -1,0 +1,132 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width="90%" height="90%">
+    </svg>
+    <script>
+class Particle {
+  constructor(center, amp, phase, direction) {
+    this.center = center;
+    this.amp = amp;
+    this.phase = phase;
+    this.direction = direction;
+    this.elm = null;
+  }
+
+  prepareElm(svg, color) {
+    if (this.direction === 'horizontal') {
+      this.elm = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      this.elm.setAttribute('x1', this.center.x);
+      this.elm.setAttribute('y1', this.center.y - this.amp);
+      this.elm.setAttribute('x2', this.center.x);
+      this.elm.setAttribute('y2', this.center.y + this.amp);
+      this.elm.setAttribute('stroke', color);
+      this.elm.setAttribute('stroke-width', 5);
+      this.elm.setAttribute('stroke-linecap', 'round');
+    }
+    else {
+      this.elm = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      this.elm.setAttribute('r', 3);
+      this.elm.setAttribute('cx', this.center.x);
+      this.elm.setAttribute('cy', this.center.y);
+      this.elm.setAttribute('fill', color);
+    }
+    this.elm.setAttribute('transform', 'translate(0, 0)');
+    svg.appendChild(this.elm);
+  }
+
+  position() {
+    return {
+      x: this.center.x + this.horizontalDisplacement(),
+      y: this.center.y + this.verticalDisplacement()
+    };
+  }
+
+  horizontalDisplacement() {
+    return this.amp * Math.cos(this.phase);
+  }
+
+  verticalDisplacement() {
+    return this.amp * Math.sin(this.phase);
+  }
+
+  nextStep(diff) {
+    this.phase -= diff;
+    if (this.direction === 'circle') {
+      this.elm.setAttribute('transform', 'translate(' + this.horizontalDisplacement() + ', ' + this.verticalDisplacement() + ')')
+    }
+    else if (this.direction === 'vertical') {
+      this.elm.setAttribute('transform', 'translate(' + 0 + ', ' + this.verticalDisplacement() + ')')
+    }
+    else if (this.direction === 'horizontal') {
+      this.elm.setAttribute('transform', 'translate(' + this.horizontalDisplacement() + ', ' + 0 + ')')
+    }
+  }
+}
+
+const svg = document.getElementsByTagName('svg')[0];
+const count = 100;
+const width = 800;
+const height = 50;
+const displacement = Math.PI * 4 / count;
+const step = width / count;
+const amp = step * 2.8;
+const offset = 50;
+
+const circleParticles = [];
+const verticalParticles = [];
+const horizontalParticles = [];
+for (let i = 0; i < count; i++) {
+  color = 'rgba(0, 0, 0, 1.0)';
+  if (i === Math.floor(count / 2)) {
+    color = 'rgba(255, 0, 0, 1.0)';
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', i * step + offset);
+    line.setAttribute('y1', 100 - amp);
+    line.setAttribute('x2', i * step + offset);
+    line.setAttribute('y2', 100 + amp);
+    line.setAttribute('stroke', 'red');
+    line.setAttribute('stroke-width', 1);
+    svg.appendChild(line);
+
+//    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+//    circle.setAttribute('r', amp);
+//    circle.setAttribute('cx', i * step + offset);
+//    circle.setAttribute('cy', 150);
+//    circle.setAttribute('stroke', 'red');
+//    circle.setAttribute('fill', 'transparent');
+//    svg.appendChild(circle);
+  }
+
+  const circleParticle = new Particle({x:i * step + offset, y:100}, amp, displacement * i, 'vertical');
+  circleParticle.prepareElm(svg, color);
+  circleParticles.push(circleParticle);
+
+//  const verticalParticle = new Particle({x:i * step + offset, y:150}, amp, displacement * i, 'circle');
+//  verticalParticle.prepareElm(svg, color);
+//  verticalParticles.push(verticalParticle);
+
+  const horizontalParticle = new Particle({x:i * step + offset, y:260}, amp, displacement * i, 'horizontal');
+  horizontalParticle.prepareElm(svg, color);
+  horizontalParticles.push(horizontalParticle);
+}
+
+function animation() {
+  const step = Math.PI / 100;
+  circleParticles.forEach((p) => {
+    p.nextStep(step);
+  });
+  verticalParticles.forEach((p) => {
+    p.nextStep(step);
+  });
+  horizontalParticles.forEach((p) => {
+    p.nextStep(step);
+  });
+  window.requestAnimationFrame(animation);
+}
+animation();
+    </script>
+  </body>
+</html>
