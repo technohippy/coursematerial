@@ -123,33 +123,22 @@ for (let i = 0; i < count; i++) {
   horizontalParticles.push(horizontalParticle);
 }
 
-function setParticlePhase(phase) {
+function setParticlePhase(step) {
   circleParticles.forEach((p) => {
-    p.phase = phase;
-    p.apply();
+    p.nextStep(step);
   });
   verticalParticles.forEach((p) => {
-    p.phase = phase;
-    p.apply();
+    p.nextStep(step);
   });
   horizontalParticles.forEach((p) => {
-    p.phase = phase;
-    p.apply();
+    p.nextStep(step);
   });
 }
 
 function animation() {
   if (window.start) {
     const step = Math.PI / 100;
-    circleParticles.forEach((p) => {
-      p.nextStep(step);
-    });
-    verticalParticles.forEach((p) => {
-      p.nextStep(step);
-    });
-    horizontalParticles.forEach((p) => {
-      p.nextStep(step);
-    });
+    setParticlePhase(step);
   }
   window.requestAnimationFrame(animation);
 }
